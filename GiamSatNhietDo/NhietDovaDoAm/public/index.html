@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Thông số đo nhiệt độ độ ẩm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        .border-left-primary { border-left: 0.25rem solid #4e73df !important; }
+        .border-left-success { border-left: 0.25rem solid #1cc88a !important; }
+        .border-left-info { border-left: 0.25rem solid #36b9cc !important; }
+        .border-left-warning { border-left: 0.25rem solid #f6c23e !important; }
+        #wrapper { background: linear-gradient(black, white); min-height: 100vh; }
+        .text-primary { color: #4e73df !important; }
+        .text-success { color: #1cc88a !important; }
+        .text-info { color: #36b9cc !important; }
+        .text-warning { color: #f6c23e !important; }
+        .text-gray-300 { color: #dddfeb !important; }
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0">Thông số Nhiệt độ độ ẩm </h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-left-primary py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-primary font-weight-bold text-xs mb-1" style="font-size: 14px;">Nhiệt độ</div>
+                                            <div class="text-dark font-weight-bold h5 mb-0">
+                                                <span id="NhietDoC">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-thermometer-half fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-left-success py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-success font-weight-bold text-xs mb-1" style="font-size: 14px;">Cảm giác thực</div>
+                                            <div class="text-dark font-weight-bold h5 mb-0">
+                                                <span id="CamGiacThuc">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-left-info py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-info font-weight-bold text-xs mb-1" style="font-size: 14px;">Độ ẩm</div>
+                                            <div class="row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="text-dark font-weight-bold h5 mb-0 mr-3">
+                                                        <span id="DoAm">
+                                                            <div class="spinner-border text-primary" role="status">
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-tint fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3 mb-4">
+                            <div class="card shadow border-left-warning py-2">
+                                <div class="card-body">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-warning font-weight-bold text-xs mb-1" style="font-size: 14px;">Nhiệt độ (F) </div>
+                                            <div class="text-dark font-weight-bold h5 mb-0">
+                                                <span id="NhietDoF">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only">Loading...</span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phần Biểu đồ -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="m-0 font-weight-bold text-primary">Biểu đồ Lịch sử</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="historyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Lịch sử Đo</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Nhiệt độ (°C)</th>
+                                <th>Nhiệt độ (°F)</th>
+                                <th>Độ ẩm (%)</th>
+                                <th>Cảm giác thực</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright">
+                       
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4S3K-tLJtcH76CtKTkOR99S8TDj5voxM",
+            authDomain: "nhietdovadoam-aa9c3.firebaseapp.com",
+            databaseURL: "https://nhietdovadoam-aa9c3-default-rtdb.firebaseio.com",
+            projectId: "nhietdovadoam-aa9c3",
+            storageBucket: "nhietdovadoam-aa9c3.firebasestorage.app",
+            messagingSenderId: "220587340702",
+            appId: "1:220587340702:web:0184da7e76ab7878675c8f",
+            measurementId: "G-67BPKR85Q8"
+    // ... (config của bạn)
+        };
+
+// Initialize Firebase
+        
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            
+        document.addEventListener("DOMContentLoaded", () => {
+            const tempElementC = document.getElementById('NhietDoC'); 
+            const tempElement = document.getElementById('NhietDoF');
+            const humidityElement = document.getElementById('DoAm');
+            const hicElement = document.getElementById('CamGiacThuc');
+
+            // Tạo các tham chiếu cho dữ liệu Firebase
+            const tempRef = ref(database, 'T');
+            const humidRef = ref(database, 'H');
+            const hicRef = ref(database, 'HIC');
+         // Lắng nghe dữ liệu nhiệt độ
+        onValue(tempRef, (snapshot) => {
+            const tempC = snapshot.val();
+            const tempElement = document.getElementById('NhietDoC');
+            const tempElementF = document.getElementById('NhietDoF');  
+            if (tempElementC && tempElementF) {
+                if (tempC != null) {
+                    const tempF = (tempC * 9/5) + 32;
+                    // tempElement.textContent = `${tempC.toFixed(2)}°C / ${tempF.toFixed(2)}°F`;
+                    tempElementC.textContent = `Nhiệt độ (°C): ${tempC.toFixed(2)}°C`;
+                    tempElementF.textContent = `Nhiệt độ (°F): ${tempF.toFixed(2)}°F`;
+
+                      // Cập nhật dữ liệu vào lịch sử
+                    const timeString = new Date().toLocaleTimeString();
+                    historyData.unshift({
+                        time: timeString,
+                        temperature: tempC,
+                        humidity: parseFloat(humidityElement.textContent),
+                        heatIndex: parseFloat(hicElement.textContent),
+                        temperatureF: tempF
+                    });
+                
+                    if (historyData.length > maxHistoryLength) {
+                        historyData.pop();
+                    }
+
+                    updateTable();
+                    updateChart();
+                } else {
+                    // tempElement.textContent = 'N/A';
+                    tempElementC.textContent = 'Nhiệt độ (°C): N/A';
+                    tempElementF.textContent = 'Nhiệt độ (°F): N/A';
+                }
+            }
+        });
+
+        // Lắng nghe dữ liệu độ ẩm
+        onValue(humidRef, (snapshot) => {
+            const humidity = snapshot.val();
+            const humidityElement = document.getElementById('DoAm'); 
+            if (humidityElement) {
+                if (humidity != null) {
+                    humidityElement.textContent = `${humidity.toFixed(2)}%`;
+                } else {
+                    humidityElement.textContent = 'N/A';
+                }
+            }
+        });
+
+        // Lắng nghe dữ liệu cảm giác nhiệt
+        onValue(hicRef, (snapshot) => {
+            const hic = snapshot.val();
+            const hicElement = document.getElementById('CamGiacThuc');
+            if (hicElement) {
+                if (hic != null) {
+                    hicElement.textContent = `${hic.toFixed(2)}°C`;
+                } else {
+                    hicElement.textContent = 'N/A';
+                }
+            }
+        });
+        });
+    </script>
+    <script>
+        // Mảng lưu trữ lịch sử dữ liệu
+        const historyData = [];
+        const maxHistoryLength = 100;
+    
+        // Khởi tạo biểu đồ
+        const ctx = document.getElementById('historyChart').getContext('2d');
+        const historyChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Nhiệt độ (°C)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: []
+                }, {
+                    label: 'Độ ẩm (%)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    data: []
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    
+      
+    
+        // Hàm cập nhật bảng
+        function updateTable() {
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+    
+            historyData.forEach(data => {
+                const row = tbody.insertRow();
+                row.insertCell().textContent = data.time;
+                row.insertCell().textContent = data.temperature.toFixed(1);
+                row.insertCell().textContent = data.temperatureF.toFixed(1);
+                row.insertCell().textContent = data.humidity.toFixed(1);
+                row.insertCell().textContent = data.heatIndex.toFixed(1);
+            });
+        }
+    
+        // Hàm cập nhật biểu đồ
+        function updateChart() {
+            const labels = historyData.map(data => data.time).reverse();
+            const temperatures = historyData.map(data => data.temperature).reverse();
+            const humidities = historyData.map(data => data.humidity).reverse();
+
+            historyChart.data.labels = labels;
+            historyChart.data.datasets[0].data = temperatures;
+            historyChart.data.datasets[1].data = humidities;
+            historyChart.update();
+}
+    
+    </script>
+</body>
+</html>
